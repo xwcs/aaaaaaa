@@ -184,8 +184,13 @@ namespace app.nuspecutils
                     string path = Path.GetFullPath(dllFile);
                     var assembly = Assembly.LoadFile(path);
                     Console.Out.WriteLine(assembly.GetName().FullName);
-                    string[] parts = assembly.GetName().FullName.Split(',');
-                    string vv = parts[1].Split('=')[1];
+                    string vv = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
+                    if(vv == null)
+                    {
+                        string[] parts = assembly.GetName().FullName.Split(',');
+                        vv = parts[1].Split('=')[1];
+                    }
+
                     XmlNode vn = nuspecRoot.SelectSingleNode("//version");
                     if (!ReferenceEquals(null, vn))
                     {
